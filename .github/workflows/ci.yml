@@ -28,8 +28,12 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
+              - '!frontend/README.md'
+              - '!frontend/.env.example'
             backend:
               - 'backend/**'
+              - '!backend/README.md'
+              - '!backend/.env.example'
 
   frontend:
     needs: detect-changes
