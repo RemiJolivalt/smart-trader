@@ -1,0 +1,288 @@
+# Issues Sprint 0 — payloads pour gh issue create
+# Format: chaque issue séparée par "---ISSUE---"
+# Première ligne après séparateur = title
+# Lignes suivantes = labels (préfixées "labels: ")
+# Puis ligne "body:" et le reste = corps
+
+---ISSUE---
+title: [TECH] Setup monorepo + conventions (Sprint 0)
+labels: technical-debt,infra,high-priority
+body:
+## Contexte
+Le repo a été initialisé avec une structure monorepo (frontend, backend, docs, scripts, tests, infra) et les fichiers fondateurs (README, ARCHITECTURE, CONTRIBUTING, SECURITY, ADR initiaux). Cette issue ferme le périmètre de cadrage et déclare les conventions opposables.
+
+## Objectif
+Garantir que les conventions repo (branches, commits, PR, lint, tests) sont effectives et applicables dès la première feature.
+
+## Description
+- Vérifier `README.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `SECURITY.md` à jour.
+- Vérifier `.gitignore`, `.editorconfig`, `.gitattributes` cohérents avec la stack.
+- Vérifier `.github/copilot-instructions.md`, `CODEOWNERS`, `dependabot.yml`.
+- Vérifier templates issues + PR utilisables.
+- Documenter dans `docs/decision-log.md` toute déviation.
+
+## Critères d'acceptation
+- [ ] Tous les fichiers fondateurs présents et lisibles
+- [ ] Conventions Git (branches, commits) documentées dans `CONTRIBUTING.md`
+- [ ] Aucun fichier sensible commité (vérif `gitleaks` local)
+- [ ] Issue référence sa branche `feature/sprint0-setup-monorepo`
+
+## Dépendances
+Aucune.
+
+## Priorité
+high-priority
+
+## Estimation
+S
+
+## Risques
+- Dérive de scope vers du code applicatif → strict respect du périmètre fondations.
+
+## Definition of Done
+- [ ] PR validée + CI verte
+- [ ] Documentation à jour
+- [ ] ADR ajouté si décision structurante
+
+---ISSUE---
+title: [TECH] CI/CD GitHub Actions : lint + tests + build + sécu (Sprint 0)
+labels: infra,security,high-priority
+body:
+## Contexte
+Workflows `.github/workflows/ci.yml`, `preview-deploy.yml`, `labels-sync.yml` créés. Il faut valider qu'ils s'exécutent correctement sur PR et bloquent le merge en cas d'échec.
+
+## Objectif
+CI/CD verte sur `develop` et `main` avec gates de qualité bloquants.
+
+## Description
+- Confirmer le déclenchement de `ci.yml` sur PR vers `main`/`develop`.
+- Valider job `frontend` (path-filter), `backend`, `security` (gitleaks), `ci-status` (gate).
+- Configurer secret `VERCEL_TOKEN` (préparer la variable, valeur posée Sprint 0 step Vercel).
+- Activer `preview-deploy.yml` (variable repo `VERCEL_ENABLED=true` après setup Vercel).
+- Vérifier `labels-sync.yml` opérationnel.
+
+## Critères d'acceptation
+- [ ] Une PR de test sur `develop` déclenche tous les workflows attendus
+- [ ] Le job `ci-status` bloque le merge si une étape échoue
+- [ ] Gitleaks ne trouve aucun secret
+- [ ] Documentation des secrets requis ajoutée à `SECURITY.md` si nécessaire
+
+## Dépendances
+- Setup Vercel + Render (issues séparées) pour la partie preview deploy.
+
+## Priorité
+high-priority
+
+## Estimation
+M
+
+## Risques
+- Faux positifs gitleaks → ajouter `.gitleaks.toml` si besoin (tracé en ADR).
+
+## Definition of Done
+- [ ] CI verte sur `develop`
+- [ ] Documentation secrets / variables CI/CD à jour
+- [ ] PR validée
+
+---ISSUE---
+title: [TECH] Setup projet Supabase (DB vide + Auth) (Sprint 0)
+labels: infra,backend,security,high-priority
+body:
+## Contexte
+Le projet utilisera Supabase (Postgres + Auth + Storage) avec RLS systématique (cf. `docs/technical-spec.md` §3 et §6).
+
+## Objectif
+Disposer de deux projets Supabase (`dev`, `prod`) opérationnels, vides, avec Auth activée et RLS par défaut.
+
+## Description
+- Créer projet `smart-trader-dev` (région EU).
+- Créer projet `smart-trader-prod` (région EU).
+- Activer Auth (email/password minimum, MFA recommandé).
+- Vérifier paramètres sécurité par défaut (PII protection, JWT expiration courte).
+- Récupérer URL + anon key + service_role key.
+- Stocker les secrets dans Render/Fly + Vercel + GitHub Encrypted Secrets (jamais en clair dans le repo).
+- Préparer dossier `infra/supabase/migrations/` pour les futures migrations.
+
+## Critères d'acceptation
+- [ ] Deux projets Supabase créés
+- [ ] Auth activée et testée (compte de test créé puis supprimé)
+- [ ] Secrets distribués dans les bonnes plateformes (cf. `SECURITY.md` §2)
+- [ ] Aucune clé en clair dans le repo (gitleaks vert)
+- [ ] `infra/supabase/README.md` créé décrivant l'usage
+
+## Dépendances
+Aucune.
+
+## Priorité
+high-priority
+
+## Estimation
+S
+
+## Risques
+- Confusion entre clés `anon` et `service_role` → checklist de distribution stricte.
+
+## Definition of Done
+- [ ] Projets accessibles, Auth fonctionnelle
+- [ ] Secrets stockés conformément à `SECURITY.md`
+- [ ] Documentation à jour
+
+---ISSUE---
+title: [TECH] Setup hébergement Vercel + Render/Fly.io (Sprint 0)
+labels: infra,frontend,backend,high-priority
+body:
+## Contexte
+Frontend Next.js sur Vercel, backend FastAPI sur Render (ou Fly.io). À ce stade les apps sont vides — il faut juste les sockets de déploiement prêts.
+
+## Objectif
+Avoir des déploiements vides accessibles (placeholder) pour `dev`, `preview`, `prod`.
+
+## Description
+- Créer projet Vercel lié au repo (branch `main` = prod, `develop` = preview, PR = preview).
+- Créer service Render/Fly pour le backend (placeholder retournant `/health`).
+- Configurer variables d'environnement par environnement (jamais en clair dans le repo).
+- Récupérer `VERCEL_TOKEN` + ajouter à GitHub Encrypted Secrets.
+- Vérifier domaine Vercel et URL backend.
+
+## Critères d'acceptation
+- [ ] URL Vercel preview & prod accessibles (page placeholder)
+- [ ] URL backend `/health` répond 200
+- [ ] Secrets en place (Vercel, Render, GitHub Actions)
+- [ ] Variable repo `VERCEL_ENABLED=true` activée
+
+## Dépendances
+- Setup Supabase (pour secrets backend).
+
+## Priorité
+high-priority
+
+## Estimation
+S
+
+## Risques
+- Coût caché si tier non-free → vérifier plan avant activation.
+
+## Definition of Done
+- [ ] Déploiements verts
+- [ ] Documentation `infra/README.md` mise à jour
+- [ ] Coûts confirmés ≤ 20 €/mois
+
+---ISSUE---
+title: [SECURITY] Setup secrets management (Vercel/Render/GitHub) (Sprint 0)
+labels: security,infra,high-priority
+body:
+## Contexte
+Aucun secret ne doit être en clair dans le repo. Les secrets sont gérés par Vercel Env Vars, Render/Fly secrets, GitHub Encrypted Secrets (cf. `SECURITY.md` §2).
+
+## Objectif
+Politique secrets opérationnelle, gitleaks intégré CI, rotation documentée.
+
+## Description
+- Inventorier les secrets requis (Supabase URL/keys, IBKR keys, Telegram token, SMTP, Vercel token, Sentry DSN).
+- Définir où chaque secret est stocké (matrice `SECURITY.md` §2).
+- Vérifier `gitleaks` actif en CI (job `security` du workflow `ci.yml`).
+- Documenter procédure de rotation (90/180 jours selon type).
+- Créer `.env.example` dans `frontend/` et `backend/` listant les variables sans valeur.
+
+## Critères d'acceptation
+- [ ] Aucun secret en clair (gitleaks vert sur full-history)
+- [ ] Matrice de gestion des secrets à jour dans `SECURITY.md`
+- [ ] `.env.example` présents dans `frontend/` et `backend/`
+- [ ] Procédure de rotation documentée
+
+## Dépendances
+- Issues Supabase + Vercel/Render (pour récupérer les valeurs réelles).
+
+## Priorité
+high-priority
+
+## Estimation
+S
+
+## Risques
+- Oubli d'un secret → audit de revue PR systématique sur fichiers `.env*`.
+
+## Definition of Done
+- [ ] Gitleaks vert
+- [ ] Matrice secrets validée
+- [ ] PR mergée
+
+---ISSUE---
+title: [TECH] Setup observabilité (Sentry + BetterStack + UptimeRobot) (Sprint 0)
+labels: infra,security
+body:
+## Contexte
+Observabilité minimale dès le Sprint 0 (cf. `docs/technical-spec.md` §7) : erreurs front+back (Sentry), logs structurés (BetterStack/Logtail), uptime (UptimeRobot).
+
+## Objectif
+Comptes créés, DSN/tokens distribués, prêts à être consommés dès le Sprint 1.
+
+## Description
+- Créer compte Sentry, projet `smart-trader-frontend` + `smart-trader-backend`.
+- Créer compte BetterStack/Logtail, source `smart-trader-backend`.
+- Créer monitor UptimeRobot sur l'URL `/health` du backend (ping 5 min).
+- Stocker DSN/tokens dans secrets management.
+- Définir les sévérités d'alerte (P0/P1).
+
+## Critères d'acceptation
+- [ ] Comptes créés (free tier)
+- [ ] Secrets stockés
+- [ ] UptimeRobot ping `/health` opérationnel
+- [ ] Documentation observabilité à jour
+
+## Dépendances
+- Setup hébergement Vercel/Render (pour les URL).
+
+## Priorité
+medium
+
+## Estimation
+S
+
+## Risques
+- Trop d'alertes → définir politique d'agrégation.
+
+## Definition of Done
+- [ ] Outils opérationnels
+- [ ] Documentation à jour
+
+---ISSUE---
+title: [DOCS] Documenter setup local (docs/setup.md) (Sprint 0)
+labels: docs
+body:
+## Contexte
+Pour permettre une reprise rapide du projet par un nouveau contributeur (ou par l'agent IA), un guide setup détaillé est nécessaire.
+
+## Objectif
+Tout contributeur peut faire tourner front + back en local en < 30 min via la doc.
+
+## Description
+- Créer `docs/setup.md` couvrant :
+  - Prérequis (Node, pnpm, Python, uv, gh CLI)
+  - Variables d'environnement attendues (renvoi vers `.env.example`)
+  - Setup Supabase (lien projet dev)
+  - Lancement frontend + backend
+  - Lancement tests + lint
+  - Troubleshooting commun
+- Référencer ce guide depuis `README.md`.
+
+## Critères d'acceptation
+- [ ] `docs/setup.md` créé et complet
+- [ ] Référencé depuis `README.md`
+- [ ] Validé en suivant la procédure sur poste vierge (ou checklist)
+
+## Dépendances
+Issues Supabase, Vercel/Render, secrets (pour `.env.example` finalisés).
+
+## Priorité
+medium
+
+## Estimation
+S
+
+## Risques
+- Doc qui dérive → revue Sprint Review systématique.
+
+## Definition of Done
+- [ ] Doc à jour
+- [ ] PR mergée
