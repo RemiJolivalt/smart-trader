@@ -22,6 +22,17 @@
 
 ## Décisions initiales (cadrage)
 
+### ADR-0008 — pre-commit comme garde-fou local obligatoire
+- **Date :** 2026-05-11
+- **Statut :** Accepted
+- **Contexte :** Les hooks CI détectent les problèmes trop tard (après push). `pre-commit` les intercepte à la source.
+- **Décision :** `.pre-commit-config.yaml` avec gitleaks, pre-commit-hooks, ruff (backend), prettier (frontend). Installation requise via `pre-commit install`.
+- **Conséquences :**
+  - (+) Secrets et violations de lint bloqués avant tout push.
+  - (-) Légère friction au setup (une commande `pip install pre-commit` + `pre-commit install`).
+- **Alternatives :** husky + lint-staged (rejeté : deux stacks à maintenir). Uniquement CI (rejeté : boucle de feedback trop lente).
+- **Liens :** `.pre-commit-config.yaml`, `.gitleaks.toml`, issue #6.
+
 ### ADR-0001 — Monorepo unique
 - **Date :** 2026-05-11
 - **Statut :** Accepted

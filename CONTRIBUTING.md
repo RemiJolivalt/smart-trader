@@ -42,6 +42,23 @@ Exemples :
 - Merge **squash** sur `develop`, **merge commit** sur `main`.
 - Pas de `--no-verify`, pas de `--force` sur branches partagées.
 
+### Hooks locaux (pre-commit)
+
+Installation une seule fois :
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Les hooks s'exécutent automatiquement à chaque `git commit` :
+- **gitleaks** — détection de secrets
+- **pre-commit-hooks** — fin de fichier, whitespace, fichiers lourds, détection de clés privées
+- **ruff** — lint + format Python (backend)
+- **prettier** — format TypeScript/JSON/CSS (frontend)
+
+> Ne jamais bypasser avec `--no-verify` sauf cas exceptionnel documenté dans la PR.
+
 ---
 
 ## 3. Standards de code
