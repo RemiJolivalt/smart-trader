@@ -20,6 +20,8 @@ jobs:
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
       backend: ${{ steps.filter.outputs.backend }}
+      frontend_ready: ${{ steps.readiness.outputs.frontend_ready }}
+      backend_ready: ${{ steps.readiness.outputs.backend_ready }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -30,10 +32,15 @@ jobs:
               - 'frontend/**'
             backend:
               - 'backend/**'
+      - name: Check source code readiness
+        id: readiness
+        run: |
+          test -f frontend/pnpm-lock.yaml && echo "frontend_ready=true" >> "$GITHUB_OUTPUT" || echo "frontend_ready=false" >> "$GITHUB_OUTPUT"
+          test -f backend/pyproject.toml  && echo "backend_ready=true"  >> "$GITHUB_OUTPUT" || echo "backend_ready=false"  >> "$GITHUB_OUTPUT"
 
   frontend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true' && hashFiles('frontend/pnpm-lock.yaml') != ''
+    if: needs.detect-changes.outputs.frontend == 'true' && needs.detect-changes.outputs.frontend_ready == 'true'
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: frontend } }
     steps:
@@ -49,7 +56,7 @@ jobs:
 
   backend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.backend == 'true' && hashFiles('backend/pyproject.toml') != ''
+    if: needs.detect-changes.outputs.backend == 'true' && needs.detect-changes.outputs.backend_ready == 'true'
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: backend } }
     steps:
