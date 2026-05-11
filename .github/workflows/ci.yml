@@ -28,16 +28,12 @@ jobs:
           filters: |
             frontend:
               - 'frontend/**'
-              - '!frontend/README.md'
-              - '!frontend/.env.example'
             backend:
               - 'backend/**'
-              - '!backend/README.md'
-              - '!backend/.env.example'
 
   frontend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
+    if: needs.detect-changes.outputs.frontend == 'true' && hashFiles('frontend/pnpm-lock.yaml') != ''
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: frontend } }
     steps:
@@ -53,7 +49,7 @@ jobs:
 
   backend:
     needs: detect-changes
-    if: needs.detect-changes.outputs.backend == 'true'
+    if: needs.detect-changes.outputs.backend == 'true' && hashFiles('backend/pyproject.toml') != ''
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: backend } }
     steps:
