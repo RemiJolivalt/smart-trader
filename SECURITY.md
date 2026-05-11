@@ -115,7 +115,37 @@ Procédure :
 
 ---
 
-## 10. Conformité & vie privée
+## 10. Secrets & variables CI/CD
+
+### GitHub Actions — secrets requis
+
+| Secret | Utilisation | Scope | Quand |
+|---|---|---|---|
+| `VERCEL_TOKEN` | Déploiement preview Vercel (`preview-deploy.yml`) | Repo secret | Sprint 0 (step Vercel) |
+
+**Ajouter un secret** : Settings → Secrets and variables → Actions → New repository secret.
+
+### GitHub Actions — variables repo requis
+
+| Variable | Valeur | Utilisation | Quand |
+|---|---|---|---|
+| `VERCEL_ENABLED` | `true` | Active le job `vercel-preview` dans `preview-deploy.yml` | Après setup Vercel (Sprint 0) |
+
+**Ajouter une variable** : Settings → Secrets and variables → Actions → Variables → New repository variable.
+
+### Résumé des workflows et leurs dépendances
+
+| Workflow | Déclencheur | Secrets / Variables requis |
+|---|---|---|
+| `ci.yml` | push/PR sur `main`, `develop` | aucun |
+| `preview-deploy.yml` | PR vers `main`, `develop` | `VERCEL_TOKEN` (secret) + `VERCEL_ENABLED=true` (variable) |
+| `labels-sync.yml` | push sur `main` (si `infra/github/labels.yml` modifié) | `GITHUB_TOKEN` (automatique) |
+
+> `ci.yml` utilise gitleaks CLI directement (pas de licence requise). `preview-deploy.yml` est inactif tant que `VERCEL_ENABLED` n'est pas positionné.
+
+---
+
+## 11. Conformité & vie privée
 
 - Données personnelles minimales (email).
 - Pas de revente, pas de tracking tiers.
