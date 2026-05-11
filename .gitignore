@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.uv/
+.poetry/
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+*.egg-info/
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Vercel
+.vercel/
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
+
+# OS
+desktop.ini

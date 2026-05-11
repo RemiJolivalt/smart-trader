@@ -1,0 +1,51 @@
+# Labels standards Smart Trader
+# Importer via: gh label create -f infra/github/labels.yml
+# (ou GitHub Action existante type "EndBug/label-sync")
+
+- name: frontend
+  color: "1f77b4"
+  description: "Concerne le code frontend (Next.js)"
+
+- name: backend
+  color: "2ca02c"
+  description: "Concerne le code backend (FastAPI)"
+
+- name: infra
+  color: "8c564b"
+  description: "CI/CD, hébergement, IaC, monitoring"
+
+- name: bug
+  color: "d62728"
+  description: "Dysfonctionnement à corriger"
+
+- name: feature
+  color: "9467bd"
+  description: "Nouvelle fonctionnalité utilisateur"
+
+- name: security
+  color: "b91d1d"
+  description: "Sécurité, secrets, conformité"
+
+- name: high-priority
+  color: "e11d48"
+  description: "Priorité haute — à traiter rapidement"
+
+- name: low-priority
+  color: "94a3b8"
+  description: "Priorité basse"
+
+- name: technical-debt
+  color: "f59e0b"
+  description: "Refactor, dette technique"
+
+- name: blocked
+  color: "111827"
+  description: "Bloqué par dépendance externe ou autre issue"
+
+- name: sprint-review
+  color: "0ea5e9"
+  description: "Issue de bilan de sprint"
+
+- name: docs
+  color: "6b7280"
+  description: "Documentation uniquement"

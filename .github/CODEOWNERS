@@ -1,0 +1,14 @@
+# CODEOWNERS — revue PR obligatoire
+
+# Owner par défaut (à adapter avec le handle GitHub réel)
+* @RemiJolivalt
+
+# Zones critiques — revue renforcée
+/backend/app/agents/        @RemiJolivalt
+/backend/app/brokers/       @RemiJolivalt
+/backend/app/infra/         @RemiJolivalt
+/.github/                   @RemiJolivalt
+/infra/                     @RemiJolivalt
+/docs/risk-management.md    @RemiJolivalt
+/docs/decision-log.md       @RemiJolivalt
+/SECURITY.md                @RemiJolivalt
