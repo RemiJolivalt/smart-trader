@@ -1,0 +1,23 @@
+# Configuration gitleaks — Smart Trader
+# https://github.com/gitleaks/gitleaks
+
+title = "smart-trader gitleaks config"
+
+[extend]
+# Utilise les règles upstream par défaut
+useDefault = true
+
+[[allowlists]]
+description = "Fichiers d'exemple sans valeurs réelles"
+paths = [
+  '''.env\.example$''',
+  '''scripts/sprint0-issues.txt''',
+]
+
+[[allowlists]]
+description = "Tests : faux tokens de test connus"
+regexes = [
+  '''FAKE_TOKEN_FOR_TESTING''',
+  '''placeholder''',
+  '''<your-''',
+]
